@@ -32,7 +32,7 @@ class KanbanSection extends StatelessWidget {
               child: EditableContent(text: title),
             ),
             const SizedBox(height: 30),
-            SingleChildScrollView()
+            const SingleChildScrollView()
           ],
         ),
       ),

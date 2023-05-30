@@ -28,9 +28,9 @@ class LightTheme {
 
 class DarkTheme {
   static get theme => ThemeData(
-      primaryColor: const Color(0xff23A1FF),
+      primaryColor: const Color(0xff3E7BFA),
       scaffoldBackgroundColor: const Color(0xff1C1C28),
-      cardColor: const Color(0xff262C37),
+      cardColor: const Color(0xff28293D),
       disabledColor: const Color(0xff8F90A6),
       unselectedWidgetColor: const Color(0xff40415D),
       useMaterial3: true,
@@ -39,15 +39,14 @@ class DarkTheme {
         displayColor: const Color(0xffEEEFF0),
       ),
       colorScheme: const ColorScheme.dark(
-        primary: Color(0xff23A1FF),
-        secondary: Color(0xff39D98A),
-        surface: Color(0xff262C37),
-        background: Color(0xff1C1F2A),
-        error: Color(0xffFF3B3B),
-        onPrimary: Color(0xffFFFFFF),
-        onSecondary: Color(0xffFFFFFF),
-        onError: Color(0xffFFFFFF),
-        onBackground: Color(0xffEEEFF0),
-        onSurface: Color(0xffEEEFF0),
-      ));
+          primary: Color(0xff3E7BFA),
+          secondary: Color(0xff39D98A),
+          surface: Color(0xff28293D),
+          background: Color(0xff1C1C28),
+          error: Color(0xffFF3B3B),
+          onPrimary: Color(0xffFFFFFF),
+          onSecondary: Color(0xffFFFFFF),
+          onError: Color(0xffFFFFFF),
+          onBackground: Color(0xffFAFAFC),
+          onSurface: Color(0xffFAFAFC)));
 }
