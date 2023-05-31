@@ -7,7 +7,7 @@ class LightTheme {
       scaffoldBackgroundColor: const Color(0xffF8F8F8),
       cardColor: const Color(0xffFFFFFF),
       disabledColor: const Color(0xff8F90A6),
-      unselectedWidgetColor: const Color(0xffDDDDDD),
+      unselectedWidgetColor: const Color(0xff708194),
       canvasColor: const Color(0xffF2F2F2),
       useMaterial3: true,
       textTheme: GoogleFonts.interTextTheme().apply(

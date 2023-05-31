@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kanban/core/utils/extensions.dart';
 import 'package:kanban/core/widgets/dismissible_area.dart';
-import 'package:kanban/core/widgets/kanban_section.dart';
-import 'package:kanban/core/widgets/sidebar.dart';
 
 class KanbanView extends StatefulWidget {
   const KanbanView({super.key});
@@ -19,15 +15,12 @@ class _KanbanViewState extends State<KanbanView> {
   @override
   Widget build(BuildContext context) {
     return const DismissibleArea(
-      child: Scaffold(
-        body: Row(
-          children: [
-            Sidebar(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 30),
-                /*Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 30),
+          Text('KANBAN'),
+          /*Expanded(
                   child: ReorderableListView(
                     buildDefaultDragHandles: false,
                     scrollDirection: Axis.horizontal,
@@ -50,10 +43,7 @@ class _KanbanViewState extends State<KanbanView> {
                     ],
                   ),
                 ),*/
-              ],
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

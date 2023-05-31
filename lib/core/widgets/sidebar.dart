@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kanban/core/utils/extensions.dart';
+import 'package:kanban/core/utils/routes.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
@@ -47,16 +49,18 @@ class _SidebarState extends State<Sidebar> {
           const SizedBox(height: 20),
           SidebarButton(
             active: selectedIndex == 0,
-            icon: FontAwesomeIcons.house,
+            icon: FontAwesomeIcons.solidNoteSticky,
             onPressed: () => setState(() {
               selectedIndex = 0;
+              context.go(Routes.board);
             }),
           ),
           SidebarButton(
             active: selectedIndex == 1,
-            icon: FontAwesomeIcons.solidFolderOpen,
+            icon: FontAwesomeIcons.chartSimple,
             onPressed: () => setState(() {
               selectedIndex = 1;
+              context.go(Routes.analytics);
             }),
           ),
           SidebarButton(
@@ -64,6 +68,7 @@ class _SidebarState extends State<Sidebar> {
             icon: FontAwesomeIcons.gear,
             onPressed: () => setState(() {
               selectedIndex = 2;
+              context.go(Routes.settings);
             }),
           ),
         ],
@@ -107,7 +112,7 @@ class SidebarButton extends StatelessWidget {
         icon: FaIcon(
           icon,
           size: 21,
-          color: context.theme.dividerColor,
+          color: context.theme.unselectedWidgetColor,
         ),
         onPressed: onPressed,
       ),
