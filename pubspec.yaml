@@ -39,6 +39,7 @@ dependencies:
   font_awesome_flutter: ^10.4.0
   auto_size_text_field: ^2.2.1
   go_router: ^7.1.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

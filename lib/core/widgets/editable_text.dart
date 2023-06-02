@@ -43,9 +43,10 @@ class _EditableContentState extends State<EditableContent> {
   @override
   Widget build(BuildContext context) {
     final style =
-        (widget.title ? context.text.headlineSmall : context.text.labelMedium)!;
+        (widget.title ? context.text.headlineSmall : context.text.bodySmall)!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         AutoSizeTextField(
           textAlign: TextAlign.center,
@@ -64,27 +65,24 @@ class _EditableContentState extends State<EditableContent> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Transform.translate(
-          offset: const Offset(-4, 1),
-          child: IconButton(
-            color: context.theme.disabledColor,
-            icon: const FaIcon(
-              FontAwesomeIcons.pen,
-              size: 14,
-            ),
-            onPressed: () {
-              setState(() {
-                enabled = true;
-              });
-              Future.delayed(const Duration(milliseconds: 100), () {
-                controller.selection = TextSelection(
-                  baseOffset: 0,
-                  extentOffset: controller.value.text.length,
-                );
-                focusNode.requestFocus();
-              });
-            },
+        IconButton(
+          color: context.theme.disabledColor,
+          icon: const FaIcon(
+            FontAwesomeIcons.pen,
+            size: 12,
           ),
+          onPressed: () {
+            setState(() {
+              enabled = true;
+            });
+            Future.delayed(const Duration(milliseconds: 100), () {
+              controller.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: controller.value.text.length,
+              );
+              focusNode.requestFocus();
+            });
+          },
         )
       ],
     );
