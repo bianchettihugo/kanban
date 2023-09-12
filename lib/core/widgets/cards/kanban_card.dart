@@ -4,7 +4,8 @@ import 'package:kanban/core/widgets/chips/priority_chip.dart';
 import 'package:kanban/core/utils/extensions.dart';
 
 class KanbanCard extends StatefulWidget {
-  const KanbanCard({super.key});
+  final int index;
+  const KanbanCard({this.index = 0, super.key});
 
   @override
   State<KanbanCard> createState() => _KanbanCardState();
@@ -54,69 +55,81 @@ class _KanbanCardState extends State<KanbanCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      height: 230,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 15,
-      ),
-      decoration: BoxDecoration(
-        color: context.theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Flexible(
+    return ReorderableDragStartListener(
+      index: widget.index,
+      child: Container(
+        width: double.maxFinite,
+        height: 230,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 15,
+        ),
+        margin: const EdgeInsets.only(bottom: 15),
+        decoration: BoxDecoration(
+          color: context.theme.cardColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: IgnorePointer(
+                    ignoring: !_editable,
+                    child: TextFormField(
+                      decoration: const InputDecoration.collapsed(hintText: ''),
+                      initialValue: 'Task Title',
+                      style: context.text.bodyMedium.semibold,
+                      readOnly: !_editable,
+                      focusNode: _titleFocusNode,
+                    ),
+                  ),
+                ),
+                ExcludeFocus(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: _editable
+                          ? context.theme.primaryColor
+                          : context.theme.disabledColor,
+                      size: 18,
+                    ),
+                    onPressed: _changeEditState,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+              child: IgnorePointer(
+                ignoring: !_editable,
                 child: TextFormField(
                   decoration: const InputDecoration.collapsed(hintText: ''),
-                  initialValue: 'Task Title',
-                  style: context.text.bodyMedium.semibold,
+                  initialValue:
+                      'If the style argument is null, the text will use the style from the closest enclosing DefaultTextStyle.',
+                  maxLines: 5,
                   readOnly: !_editable,
-                  focusNode: _titleFocusNode,
+                  focusNode: _descriptionFocusNode,
+                  style: context.text.bodyMedium,
                 ),
-              ),
-              ExcludeFocus(
-                child: IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: _editable
-                        ? context.theme.primaryColor
-                        : context.theme.disabledColor,
-                    size: 18,
-                  ),
-                  onPressed: _changeEditState,
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            decoration: const InputDecoration.collapsed(hintText: ''),
-            initialValue:
-                'If the style argument is null, the text will use the style from the closest enclosing DefaultTextStyle.',
-            maxLines: 5,
-            readOnly: !_editable,
-            focusNode: _descriptionFocusNode,
-            style: context.text.bodyMedium,
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: _changePriority,
-              child: PriorityChip(
-                priority: _priorities[_priorityIndex],
               ),
             ),
-          ),
-        ],
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: _changePriority,
+                child: PriorityChip(
+                  priority: _priorities[_priorityIndex],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
