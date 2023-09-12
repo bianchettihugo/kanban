@@ -56,6 +56,7 @@ class _KanbanCardState extends State<KanbanCard> {
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
+      height: 230,
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 15,
@@ -106,7 +107,6 @@ class _KanbanCardState extends State<KanbanCard> {
             focusNode: _descriptionFocusNode,
             style: context.text.bodyMedium,
           ),
-          const Spacer(),
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(

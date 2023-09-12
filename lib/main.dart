@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: SizedBox(
             width: 400,
-            height: 230,
             child: KanbanCard(),
           ),
         ),
