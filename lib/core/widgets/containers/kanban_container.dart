@@ -20,12 +20,31 @@ class KanbanContainer extends StatefulWidget {
 }
 
 class _KanbanContainerState extends State<KanbanContainer> {
+  final _titleFocusNode = FocusNode();
+
   late List<KanbanCard> _cards;
+  bool _editable = false;
 
   @override
   void initState() {
     _cards = [...widget.cards];
+    _titleFocusNode.addListener(_checkFocus);
     super.initState();
+  }
+
+  void _changeEditState() {
+    setState(() {
+      _editable = !_editable;
+    });
+    _titleFocusNode.requestFocus();
+  }
+
+  void _checkFocus() {
+    if (!_titleFocusNode.hasFocus) {
+      setState(() {
+        _editable = false;
+      });
+    }
   }
 
   @override
@@ -56,10 +75,16 @@ class _KanbanContainerState extends State<KanbanContainer> {
                 Flexible(
                   child: ReorderableDragStartListener(
                     index: widget.index,
-                    child: TextFormField(
-                      decoration: const InputDecoration.collapsed(hintText: ''),
-                      initialValue: widget.title,
-                      style: context.text.bodyMedium.semibold,
+                    child: IgnorePointer(
+                      ignoring: !_editable,
+                      child: TextFormField(
+                        readOnly: !_editable,
+                        focusNode: _titleFocusNode,
+                        decoration:
+                            const InputDecoration.collapsed(hintText: ''),
+                        initialValue: widget.title,
+                        style: context.text.bodyMedium.semibold,
+                      ),
                     ),
                   ),
                 ),
@@ -70,6 +95,16 @@ class _KanbanContainerState extends State<KanbanContainer> {
                     color: context.theme.disabledColor,
                   ),
                   onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.edit_note,
+                    size: 16,
+                    color: _editable
+                        ? context.theme.primaryColor
+                        : context.theme.disabledColor,
+                  ),
+                  onPressed: _changeEditState,
                 ),
                 IconButton(
                   icon: Icon(
@@ -110,5 +145,11 @@ class _KanbanContainerState extends State<KanbanContainer> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _titleFocusNode.dispose();
+    super.dispose();
   }
 }
