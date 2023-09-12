@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanban/core/widgets/themes/theme_colors.dart';
+import 'package:kanban/core/themes/theme_colors.dart';
 
 abstract class BaseTheme {
   ThemeData get theme;

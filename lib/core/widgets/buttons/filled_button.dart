@@ -1,4 +1,4 @@
-import 'package:kanban/core/widgets/utils/extensions.dart';
+import 'package:kanban/core/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ButtonFilled extends StatelessWidget {

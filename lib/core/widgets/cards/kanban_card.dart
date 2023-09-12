@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban/core/widgets/chips/priority.dart';
 import 'package:kanban/core/widgets/chips/priority_chip.dart';
-import 'package:kanban/core/widgets/utils/extensions.dart';
+import 'package:kanban/core/utils/extensions.dart';
 
 class KanbanCard extends StatefulWidget {
   const KanbanCard({super.key});

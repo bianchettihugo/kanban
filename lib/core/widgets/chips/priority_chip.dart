@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban/core/widgets/chips/priority.dart';
-import 'package:kanban/core/widgets/themes/base_theme.dart';
-import 'package:kanban/core/widgets/utils/extensions.dart';
+import 'package:kanban/core/themes/base_theme.dart';
+import 'package:kanban/core/utils/extensions.dart';
 
 class PriorityChip extends StatelessWidget {
   final Priority priority;

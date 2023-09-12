@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:kanban/core/widgets/themes/theme_colors.dart';
+import 'package:kanban/core/themes/theme_colors.dart';
 
 class Extensions {}
 

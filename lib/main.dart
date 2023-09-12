@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kanban/core/widgets/cards/kanban_card.dart';
-import 'package:kanban/core/widgets/themes/light_theme.dart';
+import 'package:kanban/core/themes/light_theme.dart';
 
 void main() {
   runApp(const MyApp());
