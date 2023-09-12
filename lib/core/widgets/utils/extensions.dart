@@ -17,6 +17,8 @@ extension BCExtension on BuildContext {
 
 extension BoldText on TextStyle? {
   TextStyle get bold => this!.copyWith(fontWeight: FontWeight.bold);
+
+  TextStyle get semibold => this!.copyWith(fontWeight: FontWeight.w600);
 }
 
 extension StringExtension on String {

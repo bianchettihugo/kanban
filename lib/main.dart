@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kanban/core/widgets/cards/kanban_card.dart';
+import 'package:kanban/core/widgets/themes/light_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,11 +13,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kanban',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      theme: LightTheme().theme,
+      debugShowCheckedModeBanner: false,
+      home: const Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 400,
+            height: 230,
+            child: KanbanCard(),
+          ),
+        ),
       ),
-      home: Container(),
     );
   }
 }
