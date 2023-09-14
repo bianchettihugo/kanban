@@ -36,6 +36,9 @@ class LightTheme extends BaseTheme {
         extensions: [
           BaseTheme.colors,
         ],
+        scrollbarTheme: const ScrollbarThemeData().copyWith(
+          thickness: MaterialStateProperty.all(3.6),
+        ),
         textTheme: const TextTheme(
           displayLarge: TextStyle(
             fontSize: 57.0,
