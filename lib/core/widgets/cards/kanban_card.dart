@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:kanban/app/models/task_model.dart';
 import 'package:kanban/core/widgets/chips/priority.dart';
 import 'package:kanban/core/widgets/chips/priority_chip.dart';
 import 'package:kanban/core/utils/extensions.dart';
+import 'package:kanban/core/widgets/utils/expansible_container.dart';
 
 class KanbanCard extends StatefulWidget {
-  final int index;
+  final TaskModel model;
   final bool editable;
   const KanbanCard({
-    this.index = 0,
+    required this.model,
     this.editable = false,
     super.key,
   });
@@ -59,18 +61,16 @@ class _KanbanCardState extends State<KanbanCard> {
     _titleFocusNode.requestFocus();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final child = Material(
-      color: Colors.transparent,
+  Widget _getChild([bool maxFiniteWidth = true]) {
+    return Material(
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        width: 350,
+        width: maxFiniteWidth ? double.maxFinite : 350,
         height: 230,
         padding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 15,
         ),
-        margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           color: context.theme.cardColor,
           borderRadius: BorderRadius.circular(12),
@@ -89,7 +89,7 @@ class _KanbanCardState extends State<KanbanCard> {
                     ignoring: !_editable,
                     child: TextFormField(
                       decoration: const InputDecoration.collapsed(hintText: ''),
-                      initialValue: 'Task Title',
+                      initialValue: widget.model.title,
                       style: context.text.bodyMedium.semibold,
                       readOnly: !_editable,
                       focusNode: _titleFocusNode,
@@ -116,8 +116,7 @@ class _KanbanCardState extends State<KanbanCard> {
                 ignoring: !_editable,
                 child: TextFormField(
                   decoration: const InputDecoration.collapsed(hintText: ''),
-                  initialValue:
-                      'If the style argument is null, the text will use the style from the closest enclosing DefaultTextStyle.',
+                  initialValue: widget.model.description,
                   maxLines: 5,
                   readOnly: !_editable,
                   focusNode: _descriptionFocusNode,
@@ -138,18 +137,15 @@ class _KanbanCardState extends State<KanbanCard> {
         ),
       ),
     );
+  }
 
-    return ReorderableDragStartListener(
-      index: widget.index,
-      child: LongPressDraggable(
-        delay: const Duration(milliseconds: 40),
-        feedback: child,
-        childWhenDragging: Container(
-          color: Colors.transparent,
-          height: 230,
-        ),
-        child: child,
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return Draggable(
+      feedback: _getChild(false),
+      childWhenDragging: const ExpansibleContainer(expanded: true),
+      data: widget.model,
+      child: _getChild(),
     );
   }
 

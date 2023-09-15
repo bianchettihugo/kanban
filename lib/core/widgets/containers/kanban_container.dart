@@ -4,7 +4,7 @@ import 'package:kanban/app/controllers/kanban_controller.dart';
 import 'package:kanban/app/controllers/kanban_controller.event.dart';
 import 'package:kanban/app/models/section_model.dart';
 import 'package:kanban/core/utils/extensions.dart';
-import 'package:kanban/core/widgets/cards/draggable_kanban_card.dart';
+import 'package:kanban/core/widgets/cards/kanban_card.dart';
 import 'package:kanban/core/widgets/utils/expansible_container.dart';
 
 import '../../../app/models/task_model.dart';
@@ -187,7 +187,7 @@ class _KanbanContainerState extends State<KanbanContainer> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             if (index == 0) const ExpansibleContainer(),
-                            DraggableKanbanCard(model: _cards[index]),
+                            KanbanCard(model: _cards[index]),
                             const ExpansibleContainer(),
                           ],
                         );
