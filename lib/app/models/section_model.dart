@@ -20,4 +20,14 @@ class SectionModel {
 
   @override
   int get hashCode => title.hashCode ^ tasks.hashCode;
+
+  SectionModel copyWith({
+    String? title,
+    List<TaskModel>? tasks,
+  }) {
+    return SectionModel(
+      title: title ?? this.title,
+      tasks: tasks ?? this.tasks,
+    );
+  }
 }

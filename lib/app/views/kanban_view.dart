@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kanban/app/controllers/kanban_controller.dart';
-import 'package:kanban/app/models/section_model.dart';
+import 'package:kanban/app/controllers/kanban_controller.event.dart';
+import 'package:kanban/app/controllers/kanban_controller.state.dart';
 import 'package:kanban/core/widgets/containers/kanban_container.dart';
 import 'package:kanban/core/widgets/containers/new_section_container.dart';
 import 'package:kanban/core/widgets/utils/drag_proxy.dart';
 
-class KanbanView extends StatelessWidget {
+class KanbanView extends StatefulWidget {
   const KanbanView({super.key});
 
   @override
+  State<KanbanView> createState() => _KanbanViewState();
+}
+
+class _KanbanViewState extends State<KanbanView> {
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<KanbanController, List<SectionModel>?>(
-      builder: (context, sections) {
-        if (sections == null) {
+    return BlocBuilder<KanbanController, KanbanState>(
+      buildWhen: (previous, current) => current.buildAll,
+      builder: (context, state) {
+        if (state.loading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -35,12 +42,21 @@ class KanbanView extends StatelessWidget {
           },
           footer: const NewSectionContainer(),
           children: [
-            for (int index = 0; index < sections.length; index += 1)
-              KanbanContainer(
-                key: ValueKey('${sections[index].hashCode}$index'),
-                index: index,
-                model: sections[index],
-              )
+            for (int index = 0; index < state.sections.length; index += 1)
+              BlocBuilder<KanbanController, KanbanState>(
+                  key: ValueKey('${state.sections[index].hashCode}$index'),
+                  buildWhen: (previous, current) =>
+                      !current.buildAll &&
+                          current.originSectionIndex == index ||
+                      current.destinySectionIndex == index,
+                  bloc: context.read<KanbanController>(),
+                  builder: (context, state) {
+                    return KanbanContainer(
+                      key: ValueKey('${state.sections[index].hashCode}$index'),
+                      index: index,
+                      model: state.sections[index],
+                    );
+                  })
           ],
         );
       },

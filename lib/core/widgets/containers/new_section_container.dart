@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kanban/app/controllers/kanban_controller.dart';
+import 'package:kanban/app/controllers/kanban_controller.event.dart';
 import 'package:kanban/core/utils/extensions.dart';
 
 class NewSectionContainer extends StatelessWidget {

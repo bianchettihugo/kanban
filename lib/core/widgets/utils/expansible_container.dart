@@ -3,7 +3,13 @@ import 'package:flutter/widgets.dart';
 
 class ExpansibleContainer extends StatefulWidget {
   final bool expanded;
-  const ExpansibleContainer({this.expanded = false, super.key});
+  final double? initalHeight;
+
+  const ExpansibleContainer({
+    this.expanded = false,
+    this.initalHeight,
+    super.key,
+  });
 
   @override
   State<ExpansibleContainer> createState() => _ExpansibleContainerState();
@@ -14,7 +20,7 @@ class _ExpansibleContainerState extends State<ExpansibleContainer> {
 
   @override
   void initState() {
-    _height = widget.expanded ? 230 : 25;
+    _height = widget.expanded ? (widget.initalHeight ?? 230) : 25;
     super.initState();
   }
 
@@ -29,7 +35,7 @@ class _ExpansibleContainerState extends State<ExpansibleContainer> {
       },
       onLeave: (data) {
         setState(() {
-          _height = 25;
+          _height = widget.initalHeight ?? 25;
         });
       },
       builder: (context, candidateData, rejectedData) {
