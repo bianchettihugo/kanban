@@ -45,10 +45,11 @@ class _KanbanViewState extends State<KanbanView> {
             for (int index = 0; index < state.sections.length; index += 1)
               BlocBuilder<KanbanController, KanbanState>(
                   key: ValueKey('${state.sections[index].hashCode}$index'),
-                  buildWhen: (previous, current) =>
-                      !current.buildAll &&
-                          current.originSectionIndex == index ||
-                      current.destinySectionIndex == index,
+                  buildWhen: (previous, current) {
+                    return !current.buildAll &&
+                            current.originSectionIndex == index ||
+                        current.destinySectionIndex == index;
+                  },
                   bloc: context.read<KanbanController>(),
                   builder: (context, state) {
                     return KanbanContainer(

@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kanban/app/controllers/kanban_controller.dart';
+import 'package:kanban/app/controllers/kanban_controller.event.dart';
 import 'package:kanban/app/models/task_model.dart';
 import 'package:kanban/core/widgets/chips/priority.dart';
 import 'package:kanban/core/widgets/chips/priority_chip.dart';
 import 'package:kanban/core/utils/extensions.dart';
-import 'package:kanban/core/widgets/utils/expansible_container.dart';
 
 class KanbanCard extends StatefulWidget {
   final TaskModel model;
   final bool editable;
+  final int index;
+  final int sectionIndex;
+
   const KanbanCard({
     required this.model,
     this.editable = false,
+    this.index = 0,
+    this.sectionIndex = 0,
     super.key,
   });
 
@@ -19,12 +26,27 @@ class KanbanCard extends StatefulWidget {
 }
 
 class _KanbanCardState extends State<KanbanCard> {
+  KanbanController? _controller;
   final _titleFocusNode = FocusNode();
+  final _titleController = TextEditingController();
   final _descriptionFocusNode = FocusNode();
+  final _descriptionController = TextEditingController();
   final _priorities = [
     Priority.low,
     Priority.medium,
     Priority.hight,
+  ];
+
+  final _prioritiesString = {
+    Priority.low: 'low',
+    Priority.medium: 'medium',
+    Priority.hight: 'hight',
+  };
+
+  final _prioritiesValues = [
+    'low',
+    'medium',
+    'hight',
   ];
 
   int _priorityIndex = 0;
@@ -32,19 +54,36 @@ class _KanbanCardState extends State<KanbanCard> {
 
   @override
   void initState() {
+    _priorityIndex = _prioritiesValues.indexOf(widget.model.priority);
     _titleFocusNode.addListener(_checkFocus);
     _descriptionFocusNode.addListener(_checkFocus);
     _editable = widget.editable;
+    _titleController.text = widget.model.title;
+    _descriptionController.text = widget.model.description;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_editable) _titleFocusNode.requestFocus();
+    });
     super.initState();
   }
 
   void _checkFocus() {
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!_titleFocusNode.hasFocus && !_descriptionFocusNode.hasFocus) {
-        setState(() {
-          _editable = false;
-        });
+        _stopEdditing();
       }
+    });
+  }
+
+  void _stopEdditing() {
+    _controller?.add(KanbanEditTaskEvent(
+      sectionIndex: widget.sectionIndex,
+      index: widget.index,
+      title: _titleController.text,
+      description: _descriptionController.text,
+      priority: _prioritiesString[_priorities[_priorityIndex]],
+    ));
+    setState(() {
+      _editable = false;
     });
   }
 
@@ -52,6 +91,11 @@ class _KanbanCardState extends State<KanbanCard> {
     setState(() {
       _priorityIndex = _priorityIndex == 2 ? 0 : _priorityIndex + 1;
     });
+    _controller?.add(KanbanEditTaskEvent(
+      sectionIndex: widget.sectionIndex,
+      index: widget.index,
+      priority: _prioritiesString[_priorities[_priorityIndex]],
+    ));
   }
 
   void _changeEditState() {
@@ -66,7 +110,9 @@ class _KanbanCardState extends State<KanbanCard> {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: maxFiniteWidth ? double.maxFinite : 350,
-        height: 230,
+        constraints: const BoxConstraints(
+          maxHeight: 230,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 15,
@@ -88,8 +134,8 @@ class _KanbanCardState extends State<KanbanCard> {
                   child: IgnorePointer(
                     ignoring: !_editable,
                     child: TextFormField(
+                      controller: _titleController,
                       decoration: const InputDecoration.collapsed(hintText: ''),
-                      initialValue: widget.model.title,
                       style: context.text.bodyMedium.semibold,
                       readOnly: !_editable,
                       focusNode: _titleFocusNode,
@@ -103,11 +149,41 @@ class _KanbanCardState extends State<KanbanCard> {
                       color: _editable
                           ? context.theme.primaryColor
                           : context.theme.disabledColor,
-                      size: 18,
+                      size: 16,
                     ),
-                    onPressed: _changeEditState,
+                    onPressed: () {
+                      _controller ??= context.read<KanbanController>();
+                      _changeEditState();
+                    },
                   ),
-                )
+                ),
+                ExcludeFocus(
+                  child: Tooltip(
+                    waitDuration: const Duration(milliseconds: 500),
+                    message: 'Double tap to delete.',
+                    decoration:
+                        BoxDecoration(color: Colors.grey.withOpacity(0.9)),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.delete,
+                          size: 16,
+                          color: context.theme.disabledColor,
+                        ),
+                      ),
+                      onDoubleTap: () {
+                        context
+                            .read<KanbanController>()
+                            .add(KanbanDeleteTaskEvent(
+                              sectionIndex: widget.sectionIndex,
+                              index: widget.index,
+                            ));
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -115,8 +191,11 @@ class _KanbanCardState extends State<KanbanCard> {
               child: IgnorePointer(
                 ignoring: !_editable,
                 child: TextFormField(
-                  decoration: const InputDecoration.collapsed(hintText: ''),
-                  initialValue: widget.model.description,
+                  decoration: const InputDecoration.collapsed(
+                    hintText: 'Tap on edit to add a description...',
+                  ),
+                  controller: _descriptionController,
+                  minLines: 1,
                   maxLines: 5,
                   readOnly: !_editable,
                   focusNode: _descriptionFocusNode,
@@ -124,10 +203,14 @@ class _KanbanCardState extends State<KanbanCard> {
                 ),
               ),
             ),
+            const SizedBox(height: 25),
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: _changePriority,
+                onTap: () {
+                  _controller ??= context.read<KanbanController>();
+                  _changePriority();
+                },
                 child: PriorityChip(
                   priority: _priorities[_priorityIndex],
                 ),
@@ -143,7 +226,11 @@ class _KanbanCardState extends State<KanbanCard> {
   Widget build(BuildContext context) {
     return Draggable(
       feedback: _getChild(false),
-      childWhenDragging: const ExpansibleContainer(expanded: true),
+      onDragStarted: () {
+        _titleFocusNode.unfocus();
+        _descriptionFocusNode.unfocus();
+      },
+      childWhenDragging: const SizedBox(),
       data: widget.model,
       child: _getChild(),
     );
@@ -153,6 +240,8 @@ class _KanbanCardState extends State<KanbanCard> {
   void dispose() {
     _titleFocusNode.dispose();
     _descriptionFocusNode.dispose();
+    _titleController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 }

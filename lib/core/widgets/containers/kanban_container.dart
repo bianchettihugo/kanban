@@ -7,8 +7,6 @@ import 'package:kanban/core/utils/extensions.dart';
 import 'package:kanban/core/widgets/cards/kanban_card.dart';
 import 'package:kanban/core/widgets/utils/expansible_container.dart';
 
-import '../../../app/models/task_model.dart';
-
 class KanbanContainer extends StatefulWidget {
   final int index;
   final SectionModel model;
@@ -28,12 +26,10 @@ class _KanbanContainerState extends State<KanbanContainer> {
   final _titleFocusNode = FocusNode();
   final _titleController = TextEditingController();
 
-  late List<TaskModel> _cards;
   bool _editable = false;
 
   @override
   void initState() {
-    _cards = [...widget.model.tasks];
     _titleFocusNode.addListener(_checkFocus);
     _titleController.text = widget.model.title;
     super.initState();
@@ -122,7 +118,11 @@ class _KanbanContainerState extends State<KanbanContainer> {
                               size: 18,
                               color: context.theme.disabledColor,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<KanbanController>().add(
+                                    KanbanNewTaskEvent(index: widget.index),
+                                  );
+                            },
                           ),
                         ),
                         Tooltip(
@@ -172,13 +172,14 @@ class _KanbanContainerState extends State<KanbanContainer> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
                   Container(
                     constraints: BoxConstraints(
                       maxHeight: MediaQuery.of(context).size.height - 120,
                     ),
                     child: ListView.builder(
-                      itemCount: _cards.length,
+                      key: UniqueKey(),
+                      itemCount: widget.model.tasks.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return Column(
@@ -186,18 +187,34 @@ class _KanbanContainerState extends State<KanbanContainer> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            if (index == 0) const ExpansibleContainer(),
-                            KanbanCard(model: _cards[index]),
-                            const ExpansibleContainer(),
+                            if (index == 0)
+                              ExpansibleContainer(
+                                sectionIndex: widget.index,
+                                index: index,
+                              ),
+                            KanbanCard(
+                              model: widget.model.tasks[index].copyWith(
+                                index: index,
+                                sectionIndex: widget.index,
+                              ),
+                              sectionIndex: widget.index,
+                              index: index,
+                            ),
+                            ExpansibleContainer(
+                              sectionIndex: widget.index,
+                              index: index + 1,
+                            ),
                           ],
                         );
                       },
                     ),
                   ),
-                  if (_cards.isEmpty)
-                    const ExpansibleContainer(
+                  if (widget.model.tasks.isEmpty)
+                    ExpansibleContainer(
                       expanded: true,
-                      initalHeight: 60,
+                      initalHeight: 80,
+                      index: 0,
+                      sectionIndex: widget.index,
                     )
                 ],
               ),

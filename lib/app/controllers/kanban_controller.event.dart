@@ -26,3 +26,51 @@ final class KanbanEditSectionEvent extends KanbanEvent {
     required this.newTitle,
   });
 }
+
+final class KanbanNewTaskEvent extends KanbanEvent {
+  final int index;
+
+  KanbanNewTaskEvent({
+    required this.index,
+  });
+}
+
+final class KanbanEditTaskEvent extends KanbanEvent {
+  final int sectionIndex;
+  final int index;
+  final String? title;
+  final String? description;
+  final String? priority;
+
+  KanbanEditTaskEvent({
+    required this.sectionIndex,
+    required this.index,
+    this.title,
+    this.description,
+    this.priority,
+  });
+}
+
+final class KanbanDeleteTaskEvent extends KanbanEvent {
+  final int sectionIndex;
+  final int index;
+
+  KanbanDeleteTaskEvent({
+    required this.sectionIndex,
+    required this.index,
+  });
+}
+
+final class KanbanMoveTaskEvent extends KanbanEvent {
+  final int originSectionIndex;
+  final int destinySectionIndex;
+  final int originIndex;
+  final int destinyIndex;
+
+  KanbanMoveTaskEvent({
+    required this.originSectionIndex,
+    required this.destinySectionIndex,
+    required this.originIndex,
+    required this.destinyIndex,
+  });
+}
